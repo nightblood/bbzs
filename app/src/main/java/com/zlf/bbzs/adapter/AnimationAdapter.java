@@ -24,7 +24,7 @@ public class AnimationAdapter extends BaseQuickAdapter<FuncBean, BaseViewHolder>
 
     @Override
     protected void convert(BaseViewHolder helper, FuncBean item) {
-        helper.addOnClickListener(R.id.img).addOnClickListener(R.id.tweetName);
+//        helper.addOnClickListener(R.id.img).addOnClickListener(R.id.tweetName);
         switch (helper.getLayoutPosition() % 3) {
             case 0:
                 helper.setImageResource(R.id.img, R.mipmap.animation_img1);

@@ -12,22 +12,32 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.zlf.bbzs.R;
+import com.zlf.bbzs.event.MyEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by zhu on 2019/6/17.
  */
 
-public class MyFragment extends Fragment {
+public class MyFragment extends BaseFragment {
 
     RecyclerView mRvList;
+
     public static Fragment newInstance() {
         return new MyFragment();
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_my, container, false);
+    protected void initView(View view) {
+
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_my;
     }
 
     @Override
@@ -41,4 +51,7 @@ public class MyFragment extends Fragment {
         mRvList = view.findViewById(R.id.rv_list);
 
     }
+
+
+
 }

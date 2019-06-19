@@ -6,4 +6,6 @@ package com.zlf.bbzs.bean;
 
 public class FuncBean {
     public String desc;
+    public int funcId;
+
 }

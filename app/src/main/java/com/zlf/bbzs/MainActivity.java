@@ -15,14 +15,27 @@ import com.liang.jtab.Tab;
 import com.liang.jtab.indicator.JIndicator;
 import com.liang.jtab.listener.OnTabSelectedListener;
 import com.liang.widget.JTabLayout;
+import com.zlf.bbzs.bean.FuncBean;
 import com.zlf.bbzs.entity.TabEntity;
+import com.zlf.bbzs.event.MyEvent;
 import com.zlf.bbzs.fragment.HomeFragment;
 import com.zlf.bbzs.fragment.MyFragment;
+import com.zlf.bbzs.util.BarUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+import me.yokeyword.fragmentation.ExtraTransaction;
+import me.yokeyword.fragmentation.Fragmentation;
+import me.yokeyword.fragmentation.ISupportActivity;
+import me.yokeyword.fragmentation.SupportActivityDelegate;
+import me.yokeyword.fragmentation.anim.FragmentAnimator;
+
+public class MainActivity extends AppCompatActivity implements ISupportActivity {
     private CommonTabLayout mTabLayout_3;
 
     ViewPager mVpContainer;
@@ -42,9 +55,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        BarUtils.setStatusBarColor(this, getColor(R.color.colorPrimary));
+//        BarUtils.setStatusBarAlpha(this);
+
+
         mTabLayout_3 = findViewById(R.id.tl_3);
-//        mViewPager = findViewById(R.id.vp);
-//        mViewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+
 
         mFragments.add(HomeFragment.newInstance());
         mFragments.add(MyFragment.newInstance());
@@ -64,12 +80,56 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        initHrv();
     }
 
-    private void initHrv() {
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MyEvent event) {/* Do something */};
+
+    @Override
+    public SupportActivityDelegate getSupportDelegate() {
+        return null;
+    }
+
+    @Override
+    public ExtraTransaction extraTransaction() {
+        return null;
+    }
+
+    @Override
+    public FragmentAnimator getFragmentAnimator() {
+        return null;
+    }
+
+    @Override
+    public void setFragmentAnimator(FragmentAnimator fragmentAnimator) {
 
     }
 
+    @Override
+    public FragmentAnimator onCreateFragmentAnimator() {
+        return null;
+    }
+
+    @Override
+    public void post(Runnable runnable) {
+
+    }
+
+    @Override
+    public void onBackPressedSupport() {
+
+    }
 
 }
