@@ -39,6 +39,10 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract int getLayoutId();
 
+    public boolean isCounting() {
+        return false;
+    }
+
     @Override
     public void onStart() {
         super.onStart();

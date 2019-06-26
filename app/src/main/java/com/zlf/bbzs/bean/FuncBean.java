@@ -7,5 +7,8 @@ package com.zlf.bbzs.bean;
 public class FuncBean {
     public String desc;
     public int funcId;
-
+    public FuncBean(int funcId, String desc) {
+        this.desc = desc;
+        this.funcId = funcId;
+    }
 }

@@ -35,8 +35,13 @@ public class HomeFragment extends BaseFragment {
     private RecyclerView mRvList;
     private AnimationAdapter mAnimationAdapter;
     private FrameLayout mFlContent;
-    private Fragment mBreastMilkFragment;
-    private Fragment mSleetFragment;
+    private BaseFragment mBreastMilkFragment;
+    private BaseFragment mBabyDiperFragment;
+    private BaseFragment mSleetFragment;
+    private BaseFragment mBottleFragment;
+    private BaseFragment mPooFragment;
+    private BaseFragment mHangOutFragment;
+    private BaseFragment mSportFragment;
 
 
     public static Fragment newInstance() {
@@ -50,8 +55,15 @@ public class HomeFragment extends BaseFragment {
         mRvList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mFlContent = view.findViewById(R.id.fl_content);
         initAdapter();
+
         mBreastMilkFragment = BreastMilkFragment.newInstance();
         mSleetFragment = SleepFragment.newInstance();
+        mBabyDiperFragment = BabyDiaperFragment.newInstance();
+        mBottleFragment = BottleFragment.newInstance();
+        mPooFragment = PooFragment.newInstance();
+        mHangOutFragment = HangOutFragment.newInstance();
+        mSportFragment = SportFragment.newInstance();
+
         getFragmentManager().beginTransaction().add(R.id.fl_content, mBreastMilkFragment, BreastMilkFragment.class.getSimpleName()).commit();
     }
 
@@ -61,16 +73,12 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initAdapter() {
+        String[] funcStr = {"哺乳", "尿不湿", "睡觉", "奶瓶","便便", "外出", "运动"};
         List<FuncBean> funcs = new ArrayList<>();
-        funcs.add(new FuncBean());
-        funcs.add(new FuncBean());
-        funcs.add(new FuncBean());
-        funcs.add(new FuncBean());
-        funcs.add(new FuncBean());
-        funcs.add(new FuncBean());
-        funcs.add(new FuncBean());
-        funcs.add(new FuncBean());
-        funcs.add(new FuncBean());
+        for (int i = 0; i < funcStr.length; i++) {
+            funcs.add(new FuncBean(i, funcStr[i]));
+        }
+
         mAnimationAdapter = new AnimationAdapter(funcs);
         mAnimationAdapter.openLoadAnimation();
         int mFirstPageItemCount = 3;
@@ -98,23 +106,36 @@ public class HomeFragment extends BaseFragment {
 //                }
 //            }
 //        });
-        mAnimationAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                FuncBean item = (FuncBean) adapter.getData().get(position);
-                ToastUtils.showShort("clicked " + position);
+        mAnimationAdapter.setOnItemClickListener((adapter, view, position) -> {
+            FuncBean item = (FuncBean) adapter.getData().get(position);
+            ToastUtils.showShort("clicked " + position);
 //                showFragment(item.funcId);
-                showFragment(position);
+            if (mBreastMilkFragment.isCounting() || mBabyDiperFragment.isCounting()|| mSleetFragment.isCounting()|| mBottleFragment.isCounting()
+                    || mPooFragment.isCounting()|| mHangOutFragment.isCounting()|| mSportFragment.isCounting()) {
+                ToastUtils.showShort("计时中，不能使用其他功能。");
+                return;
             }
+            showFragment(position);
         });
         mRvList.setAdapter(mAnimationAdapter);
     }
 
     private void showFragment(int funcId) {
+
         if (funcId == 0) {
             getFragmentManager().beginTransaction().replace(R.id.fl_content, mBreastMilkFragment, BreastMilkFragment.class.getSimpleName()).commit();
         }else if (funcId == 1) {
+            getFragmentManager().beginTransaction().replace(R.id.fl_content, mBabyDiperFragment, BabyDiaperFragment.class.getSimpleName()).commit();
+        }else if (funcId == 2) {
             getFragmentManager().beginTransaction().replace(R.id.fl_content, mSleetFragment, SleepFragment.class.getSimpleName()).commit();
+        }else if (funcId == 3) {
+            getFragmentManager().beginTransaction().replace(R.id.fl_content, mBottleFragment, BottleFragment.class.getSimpleName()).commit();
+        }else if (funcId == 4) {
+            getFragmentManager().beginTransaction().replace(R.id.fl_content, mPooFragment, PooFragment.class.getSimpleName()).commit();
+        }else if (funcId == 5) {
+            getFragmentManager().beginTransaction().replace(R.id.fl_content, mHangOutFragment, HangOutFragment.class.getSimpleName()).commit();
+        }else if (funcId == 6) {
+            getFragmentManager().beginTransaction().replace(R.id.fl_content, mSportFragment, SportFragment.class.getSimpleName()).commit();
         }
 
 

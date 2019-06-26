@@ -11,8 +11,8 @@ import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.zlf.bbzs.MainApplication;
 import com.zlf.bbzs.R;
-import com.zlf.bbzs.bean.BabyDiaperBean;
-import com.zlf.bbzs.bean.BabyDiaperBeanDao;
+import com.zlf.bbzs.bean.HangOutBean;
+import com.zlf.bbzs.bean.HangOutBeanDao;
 import com.zlf.bbzs.bean.SleepBean;
 import com.zlf.bbzs.bean.SleepBeanDao;
 import com.zlf.bbzs.constant.TimeConstants;
@@ -30,36 +30,36 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * Created by zhu on 2019/6/19.
+ * Created by zhu on 2019/6/26.
  */
 
-public class SleepFragment extends BaseFragment {
-    private TextView mTvSleepStartTime;
-    private TextView mTvSleepEndTime;
+public class HangOutFragment extends BaseFragment {
+    private TextView mTvHangOutStartTime;
+    private TextView mTvHangOutEndTime;
     private TextView mTvDesc;
     private EditText mEtMemo;
     private Button mBtnCommit;
     private Button mBtnStart;
-    private long mSleepStartTime;
-    private long mSleepEndTime;
+    private long mHangOutStartTime;
+    private long mHangOutEndTime;
     private TimePickerView mPvStartTime;
     private TimePickerView mPvEndTime;
     private Disposable mTimer;
-    private String TAG = SleepFragment.class.getSimpleName();
-    private long mSleepTime = 0;
+    private String TAG = HangOutFragment.class.getSimpleName();
+    private long mHangOutTime = 0;
 
 
     @Override
     protected void initView(View view) {
-        mTvSleepStartTime = view.findViewById(R.id.tv_sleep_time_start);
-        mTvSleepEndTime = view.findViewById(R.id.tv_sleep_time_end);
+        mTvHangOutStartTime = view.findViewById(R.id.tv_hang_out_time_start);
+        mTvHangOutEndTime = view.findViewById(R.id.tv_hang_out_time_end);
         mTvDesc = view.findViewById(R.id.tv_desc);
         mEtMemo = view.findViewById(R.id.et_memo);
         mBtnCommit = view.findViewById(R.id.btn_commit);
         mBtnStart = view.findViewById(R.id.btn_start);
         mPvStartTime = new TimePickerBuilder(getContext() , (date, v) -> {
-            mSleepStartTime = TimeUtils.getMillis(date, 0, TimeConstants.SEC);
-            mTvSleepStartTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒")));
+            mHangOutStartTime = TimeUtils.getMillis(date, 0, TimeConstants.SEC);
+            mTvHangOutStartTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒")));
 
         })
                 .setType(new boolean[]{true, true, true, true, true, true})// 默认全部显示
@@ -82,8 +82,8 @@ public class SleepFragment extends BaseFragment {
                 .isDialog(false)//是否显示为对话框样式
                 .build();
         mPvEndTime = new TimePickerBuilder(getContext() , (date, v) -> {
-            mSleepEndTime = TimeUtils.getMillis(date, 0, TimeConstants.SEC);
-            mTvSleepEndTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒")));
+            mHangOutEndTime = TimeUtils.getMillis(date, 0, TimeConstants.SEC);
+            mTvHangOutEndTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒")));
         })
                 .setType(new boolean[]{true, true, true, true, true, true})// 默认全部显示
                 .setCancelText("取消")//取消按钮文字
@@ -105,10 +105,10 @@ public class SleepFragment extends BaseFragment {
                 .isDialog(false)//是否显示为对话框样式
                 .build();
 
-        mTvSleepStartTime.setOnClickListener(view1 -> {
+        mTvHangOutStartTime.setOnClickListener(view1 -> {
             mPvStartTime.show();
         });
-        mTvSleepEndTime.setOnClickListener(view1 -> {
+        mTvHangOutEndTime.setOnClickListener(view1 -> {
             mPvEndTime.show();
         });
         mBtnCommit.setOnClickListener(view1 -> commit());
@@ -120,8 +120,8 @@ public class SleepFragment extends BaseFragment {
                     mTimer.dispose();
                     mTimer = null;
                 }
-                mSleepEndTime += mSleepTime * 1000;
-                mSleepTime = 0;
+                mHangOutEndTime += mHangOutTime * 1000;
+                mHangOutTime = 0;
             } else {
 
                 mBtnStart.setText("结束");
@@ -129,24 +129,24 @@ public class SleepFragment extends BaseFragment {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(aLong -> {
-                            Log.e(TAG, "initView: "+ mSleepEndTime +", " + aLong);
-                            mSleepTime = aLong + 1;
-                            mTvSleepEndTime.setText(TimeUtils.getString(mSleepEndTime,new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒"), mSleepTime, TimeConstants.SEC));
+                            Log.e(TAG, "initView: "+ mHangOutEndTime +", " + aLong);
+                            mHangOutTime = aLong + 1;
+                            mTvHangOutEndTime.setText(TimeUtils.getString(mHangOutEndTime,new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒"), mHangOutTime, TimeConstants.SEC));
                         });
             }
         });
 
-        List<SleepBean> list = ((MainApplication) Utils.getApp()).getDaoSession().getSleepBeanDao().queryBuilder().limit(1).orderDesc(SleepBeanDao.Properties.DataTime).list();
+        List<HangOutBean> list = ((MainApplication) Utils.getApp()).getDaoSession().getHangOutBeanDao().queryBuilder().limit(1).orderDesc(HangOutBeanDao.Properties.DataTime).list();
         if (!list.isEmpty()) {
-            mTvDesc.setText(TimeUtils.getFriendlyTimeSpanByNow(list.get(0).getSleepStartTime()));
+            mTvDesc.setText(TimeUtils.getFriendlyTimeSpanByNow(list.get(0).getStartTime()));
         } else {
             mTvDesc.setText("还没有记录过呦！！！");
         }
-        mSleepStartTime = TimeUtils.getNowMills();
-        mSleepEndTime = mSleepStartTime;
+        mHangOutStartTime = TimeUtils.getNowMills();
+        mHangOutEndTime = mHangOutStartTime;
         String timeStr = TimeUtils.date2String(TimeUtils.getNowDate(), new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒"));
-        mTvSleepStartTime.setText(timeStr);
-        mTvSleepEndTime.setText(timeStr);
+        mTvHangOutStartTime.setText(timeStr);
+        mTvHangOutEndTime.setText(timeStr);
     }
 
     private void commit() {
@@ -155,15 +155,15 @@ public class SleepFragment extends BaseFragment {
             return;
         }
         try {
-            if (mSleepStartTime == 0) {
-                mSleepStartTime = TimeUtils.getNowMills();
+            if (mHangOutStartTime == 0) {
+                mHangOutStartTime = TimeUtils.getNowMills();
             }
-            if (mSleepEndTime == 0) {
-                mSleepEndTime = TimeUtils.getNowMills();
+            if (mHangOutEndTime == 0) {
+                mHangOutEndTime = TimeUtils.getNowMills();
             }
 
-            SleepBean bean = new SleepBean(TimeUtils.getNowMills(), mSleepStartTime, mSleepEndTime, mEtMemo.getText().toString());
-            ((MainApplication) Utils.getApp()).getDaoSession().getSleepBeanDao().insert(bean);
+            HangOutBean bean = new HangOutBean(TimeUtils.getNowMills(), mHangOutStartTime, mHangOutEndTime, mEtMemo.getText().toString());
+            ((MainApplication) Utils.getApp()).getDaoSession().getHangOutBeanDao().insert(bean);
 
             ToastUtils.showShort("保存成功");
         } catch (Exception e) {
@@ -177,12 +177,12 @@ public class SleepFragment extends BaseFragment {
         return mTimer != null;
     }
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_sleep;
+    public static BaseFragment newInstance() {
+        return new HangOutFragment();
     }
 
-    public static BaseFragment newInstance() {
-        return new SleepFragment();
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_hang_out;
     }
 }

@@ -13,6 +13,7 @@ import com.zlf.bbzs.R;
 import com.zlf.bbzs.bean.BreastMilkBean;
 import com.zlf.bbzs.bean.BreastMilkBeanDao;
 import com.zlf.bbzs.util.TimeUtils;
+import com.zlf.bbzs.util.ToastUtils;
 import com.zlf.bbzs.util.Utils;
 import com.zlf.bbzs.widget.ClockViewByPath;
 
@@ -101,8 +102,10 @@ public class BreastMilkFragment extends BaseFragment {
 
             BreastMilkBean bean = new BreastMilkBean(TimeUtils.getNowMills(), mInitTimeLeft, mInitTimeRight, mEtMemo.getText().toString());
             ((MainApplication) Utils.getApp()).getDaoSession().getBreastMilkBeanDao().insert(bean);
+            ToastUtils.showShort("保存成功");
 
         } catch (Exception e) {
+            ToastUtils.showShort("保存失败");
             Log.e("BmFragment", e.toString());
         }
     }
@@ -136,7 +139,7 @@ public class BreastMilkFragment extends BaseFragment {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aLong -> {
-                        mCurrIntervalRight = aLong;
+                        mCurrIntervalRight = aLong + 1;
                         mTvRight.setText(timeFormat(mInitTimeRight, mCurrIntervalRight));
                     });
         }
@@ -176,7 +179,7 @@ public class BreastMilkFragment extends BaseFragment {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aLong -> {
-                        mCurrIntervalLeft = aLong;
+                        mCurrIntervalLeft = aLong + 1;
                         mTvLeft.setText(timeFormat(mInitTimeLeft, mCurrIntervalLeft));
                     });
         }
@@ -185,6 +188,11 @@ public class BreastMilkFragment extends BaseFragment {
             mSubscribeRight = null;
             mInitTimeRight += mCurrIntervalRight;
         }
+    }
+
+    @Override
+    public boolean isCounting() {
+        return mSubscribeLeft != null || mSubscribeRight != null;
     }
 
     private String timeFormat(long initTime, long intervalSec) {
@@ -197,7 +205,7 @@ public class BreastMilkFragment extends BaseFragment {
         return R.layout.fragment_breast_milk;
     }
 
-    public static Fragment newInstance() {
+    public static BaseFragment newInstance() {
         return new BreastMilkFragment();
     }
 

@@ -19,6 +19,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        greendao {
+            //这里由1改成了2, 只认正整数
+            schemaVersion 7
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -63,5 +67,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
     implementation 'org.greenrobot:greendao:3.2.2' // add library
 
+    implementation'com.contrarywind:Android-PickerView:4.1.8'
 
 }
